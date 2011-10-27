@@ -32,3 +32,5 @@ assert_equal = function(value, test, msg)
   printf("assert equal")
   check(value == test, value.." not equal to "..test)
 end
+
+print("Test utilities loaded")

@@ -1,0 +1,8 @@
+#!/usr/bin/env lua
+
+require "<%=projec.name%>"
+
+print("Template "..arg[0].." works!")
+
+<%=projec.name%>.info()
+
