@@ -4,4 +4,4 @@ none:
 	@echo "None"
 
 tests: test/test_*.lua
-	@$(foreach test, $^, $(lua) $(test);)
+	@$(foreach test, $^, echo "Start test suite $(test)"; $(lua) $(test);)

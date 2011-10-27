@@ -33,4 +33,3 @@ assert_equal = function(value, test, msg)
   check(value == test, value.." not equal to "..test)
 end
 
-print("Test utilities loaded")
