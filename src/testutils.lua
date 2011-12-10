@@ -1,35 +1,46 @@
-local printf = function(head, txt)
-  io.stdout:write(string.format("** %s ... ", head, txt))
-end
+require("prigner.utils")
+
+test = { case = {} }
 
 local check = function(pass, message)
   if assert(pass, message) then
-    print("ok")
+    printf("%s", ".")
   else
-    print("fail")
+    printf("%s", "!")
   end
 end
 
-local test = function(msg, func, ...)
-  printf(msg)
-  return pcall(func, ...)
-end
-
 assert_failure = function(func, ...)
-  check(not test("assert failure", func, ...))
+  check(not pcall(func, ...))
 end
 
 assert_success = function(func, ...)
-  check(test("assert success", func, ...))
+  check(pcall(func, ...))
 end
 
 assert_not_nil = function(var)
-  printf("assert not nil")
-  check(var, "variable '"..var.."' is nil")
+  check(var)
 end
 
 assert_equal = function(value, test, msg)
-  printf("assert equal")
-  check(value == test, value.." not equal to "..test)
+  check(value == test)
+end
+
+test.setup = function()
+  return "setup not implemented"
+end
+
+test.teardown = function()
+  return
+end
+
+test.run = function()
+  for title, case in pairs(test.case) do
+    test.setup()
+    printf("** %s: ", title)
+    case()
+    test.teardown()
+    print()
+  end
 end
 
