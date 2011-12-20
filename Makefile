@@ -1,4 +1,7 @@
-lua = LUA_PATH="src/?.lua" lua -l testutils
+SHELL = /bin/bash
+
+LUA_PATH = "$(shell lua -l luarocks.loader -e 'print(package.path..";src/?.lua")')"
+lunit = $(shell command -v lunit)
 files = $(shell git ls-files)
 tasks = $(shell sed -run "s/^(\w+):(.*)/\1/p" Makefile)
 
@@ -11,6 +14,6 @@ help:
 	echo "Sources:"
 	$(foreach file, $(files), echo "  - $(file)";)
 
-tests: test/test_*.lua
-	$(foreach test, $^, $(lua) $(test);)
+test: test/test_*.lua
+	$(foreach test, $^, LUA_PATH=$(LUA_PATH) $(lunit) $(test);)
 
