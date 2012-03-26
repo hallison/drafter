@@ -1,19 +1,27 @@
-SHELL = /bin/bash
+SHELL     = /bin/bash
+LUA_PATH  = LUA_PATH="$(shell lua -l luarocks.loader -e 'print(package.path..";src/?.lua")')"
+LUA_CPATH = LUA_CPATH="$(shell lua -l luarocks.loader -e 'print(package.cpath)')"
+module    = prigner
+files     = $(shell git ls-files)
+targets   = $(shell sed -run "s/^(\w+):(.*)/\1/p" Makefile)
+docdir    = doc
+test  	 	= *
 
-LUA_PATH = "$(shell lua -l luarocks.loader -e 'print(package.path..";src/?.lua")')"
-lunit = $(shell command -v lunit)
-files = $(shell git ls-files)
-tasks = $(shell sed -run "s/^(\w+):(.*)/\1/p" Makefile)
+lunit    = $(LUA_PATH) $(LUA_CPATH) $(shell command -v lunit)
+luadoc   = $(LUA_PATH) $(LUA_CPATH) $(shell command -v luadoc) -d $(docdir)
 
 .SILENT:
+.PHONY: doc
 
 help:
-	echo "Tasks:"
-	$(foreach task, $(tasks), echo "  - $(task)";)
+	echo "Targets:"
+	$(foreach target, $(targets), echo "  - $(target)";)
 	echo
 	echo "Sources:"
 	$(foreach file, $(files), echo "  - $(file)";)
 
-test: test/test_*.lua
-	$(foreach test, $^, LUA_PATH=$(LUA_PATH) $(lunit) $(test);)
+check: test/test_$(test).lua
+	$(foreach test, $^, $(lunit) $(test);)
 
+doc: src/$(module)/*
+	$(luadoc) $^
