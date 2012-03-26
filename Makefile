@@ -1,7 +1,7 @@
 SHELL     = /bin/bash
 LUA_PATH  = LUA_PATH="$(shell lua -l luarocks.loader -e 'print(package.path..";src/?.lua")')"
 LUA_CPATH = LUA_CPATH="$(shell lua -l luarocks.loader -e 'print(package.cpath)')"
-module    = prigner
+module    = drafter
 files     = $(shell git ls-files)
 targets   = $(shell sed -run "s/^(\w+):(.*)/\1/p" Makefile)
 docdir    = doc

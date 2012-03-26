@@ -1,11 +1,11 @@
 require("lunit")
-require("prigner.snippet")
+require("drafter")
 
-module("prigner.test_snippet", package.seeall, lunit.testcase)
+module("drafter.test_snippet", package.seeall, lunit.testcase)
 
 function setup()
   fixtures = "test/fixtures/snippets"
-  snippet  = prigner.snippet
+  snippet  = drafter.snippet
   snippet.init(fixtures, "lua", "script")
 end
 

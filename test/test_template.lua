@@ -1,21 +1,34 @@
-require("prigner.template")
+require("lunit")
+require("drafter")
 
-template = prigner.template
+module("drafter.tests", package.seeall, lunit.testcase)
 
-assert_failure(template.init, "test/fixtures/.prigner/templates/notfound")
+function setup()
+  fixtures = "test/fixtures/templates"
+  template = drafter.template
+  template.init(fixtures, "lua", "rock.spec")
+end
 
-assert_success(template.init, "test/fixtures/.prigner/templates/myproj")
+function test_should_check_template_directory()
+  assert_error("template should not be found", function()
+    template.init(fixtures, "lua", "not/found")
+  end)
 
-assert_not_nil(template.author)
-assert_equal("Hallison Batista", template.author)
+  assert_pass("template should be found", function()
+    template.init(fixtures, "lua", "rock.spec")
+  end)
+end
 
-assert_not_nil(template.version)
-assert_equal("0.1.0", template.version)
+function test_should_check_template_attributes()
+  assert_equal("Hallison Batista", template.spec.author)
+  assert_equal("0.1.0", template.spec.version)
+  assert_equal(fixtures.."/lua/rock.spec", template.spec.file)
+end
 
-assert_not_nil(template.path)
-assert_equal("test/fixtures/.prigner/templates/myproj", template.path)
-
-assert_equal(2, #template.skels.bin)
-assert_equal(3, #template.skels.src)
-assert_equal(1, #template.skels.test)
+function test_should_check_template_snippets()
+  assert_not_nil(template.spec.builder)
+  for key, value in pairs(template.spec.builder) do
+    assert_not_nil(key)
+  end
+end
 
