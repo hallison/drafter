@@ -4,25 +4,21 @@ require("drafter")
 module("drafter.test_snippet", package.seeall, lunit.testcase)
 
 function setup()
-  fixtures = "test/fixtures/snippets"
+  fixtures = "test/fixtures/drafts"
   snippet  = drafter.snippet
-  snippet.init(fixtures, "lua", "script")
 end
 
 function test_find_to_snippet_file()
-  assert_error("snippet not found", function()
-    snippet.init(fixtures, "lua", "notfound")
+  assert_error("snippet should be not found", function()
+    snippet.init(fixtures.."/lua/not/found")
   end)
-  assert_pass("snippet found", function()
-    snippet.init(fixtures, "lua", "script")
+  assert_pass("snippet should be found", function()
+    snippet.init(fixtures.."/lua/snippets/script")
   end)
-end
-
-function test_template_attributes()
-  assert_equal("lua", snippet.group)
-  assert_equal("script", snippet.entry)
-  assert_pass("snippet exist", function()
-    snippet.init(fixtures, "ruby", "sinatra/webapp.rb")
+  assert_equal(107, #snippet.content)
+  assert_pass("snippet should be found", function()
+    snippet.init(fixtures.."/ruby/snippets/sinatra/webapp.rb")
   end)
+  assert_equal(0, #snippet.content)
 end
 
