@@ -7,27 +7,24 @@
 ----------------------------------------------------------------------------
 
 -- Initialization of local access to external functions
-local input, output, open = io.input, io.output, io.open
-local insert = table.insert
-local gsub, gmatch = string.gsub, string.gmatch
-local setfenv, loadstring, pcall = setfenv, loadstring, pcall
+local open = io.open
+local setfenv = setfenv
+local loadstring = loadstring
+local pcall = pcall
+local error = error
 local pathto = pathto
 
 module("drafter.template")
 
 -- Local variables and constants
 local template = _M
-local rootdir = "%s/%s/%s"
 
-template.spec = {
+-- Basic information
+author   = nil
+version  = nil
+specfile = nil
 -- Base information
-  name = nil,
-  file = nil,
-  builder = {},
--- Only information
-  author  = nil,
-  version = nil,
-}
+files    = {}
 
 --
 -- Load specification file.
@@ -46,25 +43,21 @@ local function loadspec(file, sandbox)
   end
 end
 
-template.spec.build = function(options)
-  template.spec.builder[options.file] = options.source
-end
-
 ------------------------------------------------------------------------------
--- Initialize a template by path, group name and specification file.
+-- Initialize a template by specification file path.
 --
--- @param   path      Path to directory of templates.
--- @param   group     Template group, like a prefix.
 -- @param   specfile  Template specification file.
 ------------------------------------------------------------------------------
-template.init = function(path, group, specfile)
-  local file = rootdir:format(path, group, specfile)
-  local loaded, message = loadspec(file, template.spec) 
+template.init = function(specfile)
+  sandbox = {}
+  template.specfile = pathto(specfile)
+  local loaded, message = loadspec(specfile, sandbox) 
   if loaded then
-    template.spec.file = file
-    template.spec.name = file:gsub(".*/(%d?%w+)", "%1")
+    template.author = sandbox.author
+    template.version = sandbox.version
+    template.files = sandbox.files
   else
-    error(file..":"..message, 2)
+    error(specfile..":"..message, 2)
   end
 end
 
