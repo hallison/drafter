@@ -31,10 +31,6 @@ _G.printf = function(...)
 end
 
 _G.pathto = function(entry)
-  if io.open(entry) then
-    return entry
-  else
-    error("file or directory '"..entry.."' not found.", 2)
-  end
+  return assert(io.open(entry), "no such file "..entry) and entry
 end
 
